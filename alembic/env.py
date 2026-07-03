@@ -5,13 +5,6 @@ from sqlalchemy import pool
 
 from alembic import context
 
-# Sys é um módulo que fornece acesso a algumas variáveis usadas ou mantidas pelo interpretador e a funções que interagem fortemente com o interpretador. Ele é sempre o primeiro módulo a ser importado no início de um script.
-# OS é um módulo que fornece uma maneira portátil de usar funcionalidades dependentes do sistema operacional.
-import sys
-import os
-
-# Adiciona o diretório atual ao caminho do sistema para que possamos importar os módulos do projeto
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
@@ -23,8 +16,10 @@ if config.config_file_name is not None:
 
 # add your model's MetaData object here
 # for 'autogenerate' support
-from models import Base  # noqa
+from models import Base
+
 target_metadata = Base.metadata
+
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

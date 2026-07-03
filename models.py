@@ -1,69 +1,69 @@
-from sqlalchemy import create_engine, Column, Integer, String, Boolean, Float, ForeignKey
+from sqlalchemy import create_engine, Column, String, Integer, Boolean, Float, ForeignKey
 from sqlalchemy.orm import declarative_base
 from sqlalchemy_utils.types import ChoiceType
 
-# cria a conexão com o banco de dados SQLite
-db = create_engine("sqlite:///orders.db")
+# cria a conexão do seu banco
+db = create_engine("sqlite:///banco.db")
 
-# cria a classe base para os modelos
+# cria a base do banco de dados
 Base = declarative_base()
 
-# cria as classes/tabelas do banco de dados
-# usuário
-class User(Base):
-    __tablename__ = "users"
+# criar as classes/tabelas do banco
+class Usuario(Base):
+    __tablename__ = "usuarios"
+
     id = Column("id", Integer, primary_key=True, autoincrement=True)
-    username = Column("name", String, unique=True, nullable=False)
-    email = Column("email", String, unique=True, nullable=False)
-    password = Column("password", String, nullable=False)
-    status = Column("status", Boolean, default=True)
+    nome = Column("nome", String)
+    email = Column("email", String, nullable=False)
+    senha = Column("senha", String)
+    ativo = Column("ativo", Boolean)
     admin = Column("admin", Boolean, default=False)
-    
-    def _init__(self, username, email, password, status=True, admin=False): 
-        self.username = username
+
+    def __init__(self, nome, email, senha, ativo=True, admin=False):
+        self.nome = nome
         self.email = email
-        self.password = password
-        self.status = status
+        self.senha = senha
+        self.ativo = ativo
         self.admin = admin
-        
-# pedidos
-class Order(Base):
-    __tablename__ = "orders"
     
-#    STATUS_ORDER = [
-#        ("PENDENTE", "Pendente"),
-#        ("CANCELADO", "Cancelado"),
-#        ("FINALIZADO", "Finalizado")
-#    ]
+
+# Pedido
+class Pedido(Base):
+    __tablename__ = "pedidos"
+
+    # STATUS_PEDIDOS = (
+    #     ("PENDENTE", "PENDENTE"),
+    #     ("CANCELADO", "CANCELADO"),
+    #     ("FINALIZADO", "FINALIZADO")
+    # )
+
     id = Column("id", Integer, primary_key=True, autoincrement=True)
-    status = Column("status", String, default="PENDENTE")
-    user = Column("user", String, ForeignKey("users.id"), nullable=False,)
-    price = Column("price", Float, nullable=False)
-    
-       
-    def _init__(self, user, status="PENDENTE", price=0.0):
-        self.user = user    
+    status = Column("status", String)
+    usuario = Column("usuario", ForeignKey("usuarios.id"))
+    preco = Column("preco", Float)
+    # itens = 
+
+    def __init__(self, usuario, status="PENDENTE", preco=0):
+        self.usuario = usuario
+        self.preco = preco
         self.status = status
-        self.price = price
 
-# itens do pedido
+# ItensPedido
+class ItemPedido(Base):
+    __tablename__ = "itens_pedido"
 
-class OrderItem(Base):
-    __tablename__ = "order_items"
-    
     id = Column("id", Integer, primary_key=True, autoincrement=True)
-    quantity = Column("quantity", Integer, nullable=False)
-    flavor = Column("flavor", String, nullable=False) 
-    size = Column("size", String, nullable=False)
-    unit_price = Column("unit_price", Float, nullable=False)
-    order = Column("order", String, ForeignKey("orders.id"), nullable=False) 
-        
-    def _init__(self, quantity, flavor, size, unit_price, order):
-        self.quantity = quantity
-        self.flavor = flavor
-        self.size = size            
-        self.unit_price = unit_price
-        self.order = order
-        
+    quantidade = Column("quantidade", Integer)
+    sabor = Column("sabor", String)
+    tamanho = Column("tamanho", String)
+    preco_unitario = Column("preco_unitario", Float)
+    pedido = Column("pedido", ForeignKey("pedidos.id"))
 
-# executa a criação dos métodos no banco de dados
+    def __init__(self, quantidade, sabor, tamanho, preco_unitario, pedido):
+        self.quantidade = quantidade
+        self.sabor = sabor
+        self.tamanho = tamanho
+        self.preco_unitario = preco_unitario
+        self.pedido = pedido
+
+# executa a criação dos metadados do seu banco (cria efetivamente o banco de dados)
