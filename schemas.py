@@ -10,3 +10,8 @@ class UsuarioSchema(BaseModel):
     
     class Config:
         from_attributes = True
+        
+class PedidoSchema(BaseModel):
+    usuario: int  #"ID do usuário que fez o pedido")
+    class Config:
+        from_attributes = True
